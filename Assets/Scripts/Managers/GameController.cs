@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour {
 
 
 	[Range(0.02f, 1f)]
-	public float m_keyRepeatRateLeftRight = 0.15f;
+	public float m_keyRepeatRateLeftRight = 0.1f;
 	float m_timeToNextKeyLeftRight;
 
 
@@ -30,7 +30,9 @@ public class GameController : MonoBehaviour {
 	public float m_keyRepeatRateRotate = 0.02f;
 	float m_timeToNextKeyRotate;
 
+	bool m_gameOver = false;
 
+	public GameObject m_gameOverPanel;
 	// Use this for initialization
 	void Start () 
 	{
@@ -59,6 +61,10 @@ public class GameController : MonoBehaviour {
 			if (!m_activeShape) {
 				m_activeShape = m_spawner.SpawnShape ();
 			}
+		}
+
+		if (m_gameOverPanel) {
+			m_gameOverPanel.SetActive (false);
 		}
 	}
 
@@ -106,8 +112,18 @@ public class GameController : MonoBehaviour {
 			m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
 
 			m_activeShape.MoveDown ();
-			if (!m_gameBoard.isValidPosition (m_activeShape)) {
-				LandShape ();
+			if (!m_gameBoard.isValidPosition (m_activeShape)) 
+			{
+				if (m_gameBoard.IsOverLimit (m_activeShape)) {
+					m_activeShape.MoveUp ();
+					m_gameOver = true;
+					Debug.LogWarning (m_activeShape.name + " is over limit");
+					if (m_gameOverPanel) {
+						m_gameOverPanel.SetActive (true);
+					}
+				} else {
+					LandShape ();
+				}
 			}
 
 		}
@@ -120,11 +136,16 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if (!m_gameBoard || !m_spawner || !m_activeShape) {
+		if (!m_gameBoard || !m_spawner || !m_activeShape || m_gameOver) {
 			return;
 		}
 
 		PlayerInput ();
 
+	}
+
+	public void Restart() {
+		Debug.Log ("Restarted");
+		Application.LoadLevel (Application.loadedLevel);
 	}
 }
