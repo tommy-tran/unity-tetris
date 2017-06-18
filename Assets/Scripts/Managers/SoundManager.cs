@@ -25,6 +25,8 @@ public class SoundManager : MonoBehaviour {
 
 	public AudioSource m_musicSource;
 
+	public AudioClip m_errorSound;
+
 	// background music clips
 	public AudioClip[] m_musicClips;
 

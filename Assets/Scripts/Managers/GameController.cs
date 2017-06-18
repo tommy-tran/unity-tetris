@@ -89,8 +89,16 @@ public class GameController : MonoBehaviour {
 
 		m_gameBoard.ClearAllRows ();
 
-		if (m_soundManager.m_fxEnabled && m_soundManager.m_dropSound) {
-			AudioSource.PlayClipAtPoint (m_soundManager.m_dropSound, Camera.main.transform.position, m_soundManager.m_fxVolume);
+		PlaySound (m_soundManager.m_dropSound, 0.3f);
+		if (m_gameBoard.m_completedRows > 0) {
+			PlaySound (m_soundManager.m_clearRowSound);
+		}
+	}
+
+	void PlaySound (AudioClip clip, float volume = 1)
+	{
+		if (m_soundManager.m_fxEnabled && clip) {
+			AudioSource.PlayClipAtPoint (clip, Camera.main.transform.position, Mathf.Clamp(m_soundManager.m_fxVolume * volume, 0.05f, 1f));
 		}
 	}
 
@@ -100,21 +108,53 @@ public class GameController : MonoBehaviour {
 			m_activeShape.MoveRight ();
 			m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
 			if (!m_gameBoard.isValidPosition (m_activeShape)) {
+				PlaySound (m_soundManager.m_errorSound, 0.1f);
 				m_activeShape.MoveLeft ();
+			} else {
+				PlaySound (m_soundManager.m_moveSound, 0.3f);
 			}
+
 		}
 		else if (Input.GetButton ("MoveLeft") && Time.time > m_timeToNextKeyLeftRight) {
 			m_activeShape.MoveLeft ();
 			m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
 			if (!m_gameBoard.isValidPosition (m_activeShape)) {
+				PlaySound (m_soundManager.m_errorSound, 0.1f);
 				m_activeShape.MoveRight ();
+			} else {
+				PlaySound (m_soundManager.m_moveSound, 0.3f);
 			}
 		}
 		else if (Input.GetButtonDown ("Rotate") && Time.time > m_timeToNextKeyRotate) {
 			m_activeShape.RotateRight ();
 			m_timeToNextKeyRotate = Time.time + m_keyRepeatRateRotate;
 			if (!m_gameBoard.isValidPosition (m_activeShape)) {
-				m_activeShape.RotateLeft ();
+				if (m_activeShape.transform.position.x <= 1) 
+				{
+					m_activeShape.MoveRight ();
+					if (!m_gameBoard.isValidPosition (m_activeShape)) {
+						m_activeShape.MoveLeft ();
+						PlaySound (m_soundManager.m_errorSound, 0.1f);
+					}
+					else PlaySound (m_soundManager.m_dropSound, 0.3f);
+				} 
+				else if (m_activeShape.transform.position.x >= 8) 
+				{
+					m_activeShape.MoveLeft ();
+					if (!m_gameBoard.isValidPosition (m_activeShape)) {
+						m_activeShape.MoveRight ();
+						PlaySound (m_soundManager.m_errorSound, 0.1f);
+					}
+					else PlaySound (m_soundManager.m_dropSound, 0.3f);
+				} 
+				else 
+				{
+					m_activeShape.RotateLeft ();
+					PlaySound (m_soundManager.m_errorSound, 0.1f);
+				}
+
+			} else {
+				PlaySound (m_soundManager.m_dropSound, 0.3f);
 			}
 		}
 
@@ -133,6 +173,7 @@ public class GameController : MonoBehaviour {
 					if (m_gameOverPanel) {
 						m_gameOverPanel.SetActive (true);
 					}
+					PlaySound (m_soundManager.m_gameOverSound, 0.75f);
 				} else {
 					LandShape ();
 				}
