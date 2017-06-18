@@ -19,6 +19,7 @@ public class Board : MonoBehaviour {
 	// store inactive shapes that have landed here
 	Transform[,] m_grid;
 
+	public int m_completedRows = 0;
 
 	void Awake()
 	{
@@ -137,14 +138,15 @@ public class Board : MonoBehaviour {
 
 	public void ClearAllRows()
 	{
+		m_completedRows = 0;
 		for (int y = 0; y < m_height; ++y) {
 			if (IsComplete (y)) {
+				m_completedRows++;
 				ClearRow (y);
 				ShiftRowsDown (y + 1);
 				y--;
 			}
 		}
-
 	}
 
 	public bool IsOverLimit(Shape shape) {
