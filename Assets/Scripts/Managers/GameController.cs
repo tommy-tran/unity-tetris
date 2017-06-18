@@ -98,7 +98,8 @@ public class GameController : MonoBehaviour {
 	void PlaySound (AudioClip clip, float volume = 1)
 	{
 		if (m_soundManager.m_fxEnabled && clip) {
-			AudioSource.PlayClipAtPoint (clip, Camera.main.transform.position, Mathf.Clamp(m_soundManager.m_fxVolume * volume, 0.05f, 1f));
+			m_soundManager.PlayFX (clip, volume);
+		//	AudioSource.PlayClipAtPoint (clip, Camera.main.transform.position, Mathf.Clamp(m_soundManager.m_fxVolume * volume, 0.05f, 1f));
 		}
 	}
 

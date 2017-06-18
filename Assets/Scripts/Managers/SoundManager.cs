@@ -25,6 +25,8 @@ public class SoundManager : MonoBehaviour {
 
 	public AudioSource m_musicSource;
 
+	public AudioSource m_SFXSource;
+
 	public AudioClip m_errorSound;
 
 	// background music clips
@@ -65,6 +67,22 @@ public class SoundManager : MonoBehaviour {
 
 		// start playing
 		m_musicSource.Play();
+	}
+
+	public void PlayFX(AudioClip sfxClip, float volume)
+	{
+		m_SFXSource.Stop();
+
+		m_SFXSource.clip = sfxClip;
+
+		// set music volume
+		m_SFXSource.volume = volume;
+
+		// SFX no repeato
+		m_SFXSource.loop = false;
+
+		// start playing
+		m_SFXSource.Play();
 	}
 
 	void UpdateMusic () 
