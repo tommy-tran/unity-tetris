@@ -39,6 +39,8 @@ public class GameController : MonoBehaviour {
 	bool m_gameOver = false;
 
 	SoundManager m_soundManager;
+	public IconToggle m_rotateIconToggle;
+	bool m_clockwise = true;
 
 	public GameObject m_gameOverPanel;
 	// Use this for initialization
@@ -159,6 +161,87 @@ public class GameController : MonoBehaviour {
 		flag = false;
 	}
 
+	void PerformRotate (bool clockwiseDir)
+	{
+		if (clockwiseDir == true) {
+			m_activeShape.RotateRight ();
+			m_timeToNextKeyRotate = Time.time + m_keyRepeatRateRotate;
+			if (!m_gameBoard.isValidPosition (m_activeShape)) {
+				if (m_activeShape.transform.position.x <= 1) {
+					m_activeShape.MoveRight ();
+					if (!m_gameBoard.isValidPosition (m_activeShape)) {
+						m_activeShape.MoveLeft ();
+						m_activeShape.RotateLeft ();
+						PlaySound (m_soundManager.m_errorSound, 0.1f);
+					}
+					else {
+						Settle ();
+						PlaySound (m_soundManager.m_dropSound, 0.3f);
+					}
+				}
+				else
+					if (m_activeShape.transform.position.x >= 8) {
+						m_activeShape.MoveLeft ();
+						if (!m_gameBoard.isValidPosition (m_activeShape)) {
+							m_activeShape.MoveRight ();
+							m_activeShape.RotateLeft ();
+							PlaySound (m_soundManager.m_errorSound, 0.1f);
+						}
+						else {
+							Settle ();
+							PlaySound (m_soundManager.m_dropSound, 0.3f);
+						}
+					}
+					else {
+						SettleFloor ();
+					}
+			}
+			else {
+				Settle ();
+				PlaySound (m_soundManager.m_dropSound, 0.3f);
+			}
+		} else {
+			m_activeShape.RotateLeft ();
+			m_timeToNextKeyRotate = Time.time + m_keyRepeatRateRotate;
+			if (!m_gameBoard.isValidPosition (m_activeShape)) {
+				if (m_activeShape.transform.position.x <= 1) {
+					m_activeShape.MoveRight ();
+					if (!m_gameBoard.isValidPosition (m_activeShape)) {
+						m_activeShape.MoveLeft ();
+						m_activeShape.RotateRight ();
+						PlaySound (m_soundManager.m_errorSound, 0.1f);
+					}
+					else {
+						Settle ();
+						PlaySound (m_soundManager.m_dropSound, 0.3f);
+					}
+				}
+				else
+					if (m_activeShape.transform.position.x >= 8) {
+						m_activeShape.MoveLeft ();
+						if (!m_gameBoard.isValidPosition (m_activeShape)) {
+							m_activeShape.MoveRight ();
+							m_activeShape.RotateRight ();
+							PlaySound (m_soundManager.m_errorSound, 0.1f);
+						}
+						else {
+							Settle ();
+							PlaySound (m_soundManager.m_dropSound, 0.3f);
+						}
+					}
+					else {
+						SettleFloor ();
+					}
+			}
+			else {
+				Settle ();
+				PlaySound (m_soundManager.m_dropSound, 0.3f);
+			}
+
+		}
+
+	}
+
 	void PlayerInput ()
 	{
 		if (Input.GetButton ("MoveRight") && Time.time > m_timeToNextKeyLeftRight) {
@@ -183,37 +266,7 @@ public class GameController : MonoBehaviour {
 			}
 		} else if (Input.GetButtonDown ("Rotate") && Time.time > m_timeToNextKeyRotate) {
 			if (m_activeShape.m_canRotate) {
-				m_activeShape.RotateRight ();
-				m_timeToNextKeyRotate = Time.time + m_keyRepeatRateRotate;
-				if (!m_gameBoard.isValidPosition (m_activeShape)) {
-					if (m_activeShape.transform.position.x <= 1) {
-						m_activeShape.MoveRight ();
-						if (!m_gameBoard.isValidPosition (m_activeShape)) {
-							m_activeShape.MoveLeft ();
-							m_activeShape.RotateLeft ();
-							PlaySound (m_soundManager.m_errorSound, 0.1f);
-						} else {
-							Settle ();
-							PlaySound (m_soundManager.m_dropSound, 0.3f);
-						}
-					} else if (m_activeShape.transform.position.x >= 8) {
-						m_activeShape.MoveLeft ();
-						if (!m_gameBoard.isValidPosition (m_activeShape)) {
-							m_activeShape.MoveRight ();
-							m_activeShape.RotateLeft ();
-							PlaySound (m_soundManager.m_errorSound, 0.1f);
-						} else {
-							Settle ();
-							PlaySound (m_soundManager.m_dropSound, 0.3f);
-						}
-					} else {
-						SettleFloor ();
-
-					}
-				} else {
-					Settle ();
-					PlaySound (m_soundManager.m_dropSound, 0.3f);
-				}
+				PerformRotate (m_clockwise);
 			}
 
 		}
@@ -262,5 +315,14 @@ public class GameController : MonoBehaviour {
 	public void Restart() {
 		Debug.Log ("Restarted");
 		Application.LoadLevel (Application.loadedLevel);
+	}
+
+	public void ToggleRotateDirection()
+	{
+		m_clockwise = !m_clockwise;
+
+		if (m_rotateIconToggle) {
+			m_rotateIconToggle.ToggleIcon(m_clockwise);
+		}
 	}
 }
