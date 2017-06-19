@@ -30,6 +30,12 @@ public class GameController : MonoBehaviour {
 	public float m_keyRepeatRateRotate = 0.02f;
 	float m_timeToNextKeyRotate;
 
+	[Range(0.01f, 0.1f)]
+	public float m_settleTimeDelay = 0.25f;
+
+	float m_settleTime;
+
+	bool flag;
 	bool m_gameOver = false;
 
 	SoundManager m_soundManager;
@@ -103,6 +109,15 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
+	void Settle ()
+	{
+		m_activeShape.MoveDown ();
+		if (!m_gameBoard.isValidPosition (m_activeShape)) {
+			m_settleTime = m_settleTimeDelay;
+		}
+		m_activeShape.MoveUp ();
+	}
+
 	void PlayerInput ()
 	{
 		if (Input.GetButton ("MoveRight") && Time.time > m_timeToNextKeyLeftRight) {
@@ -112,61 +127,85 @@ public class GameController : MonoBehaviour {
 				PlaySound (m_soundManager.m_errorSound, 0.1f);
 				m_activeShape.MoveLeft ();
 			} else {
+				Settle ();
 				PlaySound (m_soundManager.m_moveSound, 0.3f);
 			}
-
-		}
-		else if (Input.GetButton ("MoveLeft") && Time.time > m_timeToNextKeyLeftRight) {
+		} else if (Input.GetButton ("MoveLeft") && Time.time > m_timeToNextKeyLeftRight) {
 			m_activeShape.MoveLeft ();
 			m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
 			if (!m_gameBoard.isValidPosition (m_activeShape)) {
 				PlaySound (m_soundManager.m_errorSound, 0.1f);
 				m_activeShape.MoveRight ();
 			} else {
+				Settle ();
 				PlaySound (m_soundManager.m_moveSound, 0.3f);
 			}
-		}
-		else if (Input.GetButtonDown ("Rotate") && Time.time > m_timeToNextKeyRotate) {
+		} else if (Input.GetButtonDown ("Rotate") && Time.time > m_timeToNextKeyRotate) {
 			m_activeShape.RotateRight ();
 			m_timeToNextKeyRotate = Time.time + m_keyRepeatRateRotate;
 			if (!m_gameBoard.isValidPosition (m_activeShape)) {
-				if (m_activeShape.transform.position.x <= 1) 
-				{
+				if (m_activeShape.transform.position.x <= 1) {
 					m_activeShape.MoveRight ();
 					if (!m_gameBoard.isValidPosition (m_activeShape)) {
 						m_activeShape.MoveLeft ();
+						m_activeShape.RotateLeft ();
 						PlaySound (m_soundManager.m_errorSound, 0.1f);
+					} else {
+						Settle ();
+						PlaySound (m_soundManager.m_dropSound, 0.3f);
 					}
-					else PlaySound (m_soundManager.m_dropSound, 0.3f);
-				} 
-				else if (m_activeShape.transform.position.x >= 8) 
-				{
+				} else if (m_activeShape.transform.position.x >= 8) {
 					m_activeShape.MoveLeft ();
 					if (!m_gameBoard.isValidPosition (m_activeShape)) {
 						m_activeShape.MoveRight ();
+						m_activeShape.RotateLeft ();
+						PlaySound (m_soundManager.m_errorSound, 0.1f);
+					} else {
+						Settle ();
+						PlaySound (m_soundManager.m_dropSound, 0.3f);
+					}
+				} else {
+					m_activeShape.MoveUp ();
+					if (!m_gameBoard.isValidPosition (m_activeShape)) {
+						m_activeShape.MoveUp ();
+						if (!m_gameBoard.isValidPosition (m_activeShape)) {
+							m_activeShape.MoveUp ();
+							if (!m_gameBoard.isValidPosition (m_activeShape)) {
+								m_activeShape.MoveDown ();
+								m_activeShape.MoveDown ();
+								m_activeShape.MoveDown ();
+							} else {
+								Settle ();
+								flag = true;
+							}
+						} else {
+							Settle ();
+							flag = true;
+						}
+					} else {
+						Settle ();
+						flag = true;
+					}
+
+					if (!flag) {
+						m_activeShape.RotateLeft ();
 						PlaySound (m_soundManager.m_errorSound, 0.1f);
 					}
-					else PlaySound (m_soundManager.m_dropSound, 0.3f);
-				} 
-				else 
-				{
-					m_activeShape.RotateLeft ();
-					PlaySound (m_soundManager.m_errorSound, 0.1f);
+					flag = false;
 				}
-
 			} else {
+				Settle ();
 				PlaySound (m_soundManager.m_dropSound, 0.3f);
 			}
 		}
 
-		if (Input.GetButton("MoveDown") && (Time.time > m_timeToNextKeyDown) || (Time.time > m_timeToDrop)) {
+		if (Input.GetButton ("MoveDown") && (Time.time > m_timeToNextKeyDown) || (Time.time > m_timeToDrop)) {
 			
 			m_timeToDrop = Time.time + m_dropInterval;
 			m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
 
 			m_activeShape.MoveDown ();
-			if (!m_gameBoard.isValidPosition (m_activeShape)) 
-			{
+			if (!m_gameBoard.isValidPosition (m_activeShape)) {
 				if (m_gameBoard.IsOverLimit (m_activeShape)) {
 					m_activeShape.MoveUp ();
 					m_gameOver = true;
@@ -176,10 +215,13 @@ public class GameController : MonoBehaviour {
 					}
 					PlaySound (m_soundManager.m_gameOverSound, 0.75f);
 				} else {
-					LandShape ();
+					if (m_settleTime <= 0) {
+						LandShape ();
+					}
+					m_activeShape.MoveUp ();
+					m_settleTime -= m_settleTimeDelay/2;
 				}
 			}
-
 		}
 		// if we don't have a spawner or gameBoard just don't run the game
 		if (!m_gameBoard || !m_spawner) {
