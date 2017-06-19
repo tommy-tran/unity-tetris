@@ -35,7 +35,9 @@ public class SoundManager : MonoBehaviour {
 
 	AudioClip m_randomMusicClip;
 
-	public AudioClip[] m_vocalClips;
+	public IconToggle m_musicIconToggle;
+
+	public IconToggle m_fxIconToggle;
 
 	public AudioClip GetRandomClip(AudioClip[] clips)
 	{
@@ -105,9 +107,18 @@ public class SoundManager : MonoBehaviour {
 
 	public void ToggleMusic() {
 		m_musicEnabled = !m_musicEnabled;
+		if (m_musicIconToggle) 
+		{
+			m_musicIconToggle.ToggleIcon (m_musicEnabled);
+		}
 	}
 
 	public void ToggleFX() {
 		m_fxEnabled = !m_fxEnabled;
+
+		if (m_fxIconToggle) 
+		{
+			m_fxIconToggle.ToggleIcon (m_fxEnabled);
+		}
 	}
 }
