@@ -13,7 +13,8 @@ public class SoundManager : MonoBehaviour {
 	[Range(0,1)]
 	public float m_fxVolume = 1.0f;
 
-	public AudioClip m_clearRowSound;
+	// Row clear sounds
+	public AudioClip[] m_clearRowSounds;
 
 	public AudioClip m_moveSound;
 
@@ -33,6 +34,8 @@ public class SoundManager : MonoBehaviour {
 	public AudioClip[] m_musicClips;
 
 	AudioClip m_randomMusicClip;
+
+	public AudioClip[] m_vocalClips;
 
 	public AudioClip GetRandomClip(AudioClip[] clips)
 	{
@@ -71,18 +74,16 @@ public class SoundManager : MonoBehaviour {
 
 	public void PlayFX(AudioClip sfxClip, float volume)
 	{
+		/**
+		Play one sound at a time
 		m_SFXSource.Stop();
-
 		m_SFXSource.clip = sfxClip;
-
-		// set music volume
 		m_SFXSource.volume = volume;
-
-		// SFX no repeato
 		m_SFXSource.loop = false;
+		m_SFXSource.Play(); 
+		**/
 
-		// start playing
-		m_SFXSource.Play();
+		m_SFXSource.PlayOneShot(sfxClip, volume);
 	}
 
 	void UpdateMusic () 

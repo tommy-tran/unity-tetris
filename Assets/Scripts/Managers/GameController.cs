@@ -97,7 +97,15 @@ public class GameController : MonoBehaviour {
 
 		PlaySound (m_soundManager.m_dropSound, 0.3f);
 		if (m_gameBoard.m_completedRows > 0) {
-			PlaySound (m_soundManager.m_clearRowSound);
+			if (m_gameBoard.m_completedRows == 4){
+				PlaySound (m_soundManager.m_clearRowSounds [2]);
+			} else if (m_gameBoard.m_completedRows > 1) {
+				PlaySound (m_soundManager.m_clearRowSounds [1]);
+			} else {
+				PlaySound (m_soundManager.m_clearRowSounds [0]);
+			}
+
+			//PlaySound (m_soundManager.m_clearRowSound);
 		}
 	}
 
@@ -116,6 +124,39 @@ public class GameController : MonoBehaviour {
 			m_settleTime = m_settleTimeDelay;
 		}
 		m_activeShape.MoveUp ();
+	}
+
+	void SettleFloor ()
+	{
+		m_activeShape.MoveUp ();
+		if (!m_gameBoard.isValidPosition (m_activeShape)) {
+			m_activeShape.MoveUp ();
+			if (!m_gameBoard.isValidPosition (m_activeShape)) {
+				m_activeShape.MoveUp ();
+				if (!m_gameBoard.isValidPosition (m_activeShape)) {
+					m_activeShape.MoveDown ();
+					m_activeShape.MoveDown ();
+					m_activeShape.MoveDown ();
+				}
+				else {
+					Settle ();
+					flag = true;
+				}
+			}
+			else {
+				Settle ();
+				flag = true;
+			}
+		}
+		else {
+			Settle ();
+			flag = true;
+		}
+		if (!flag) {
+			m_activeShape.RotateLeft ();
+			PlaySound (m_soundManager.m_errorSound, 0.1f);
+		}
+		flag = false;
 	}
 
 	void PlayerInput ()
@@ -141,62 +182,40 @@ public class GameController : MonoBehaviour {
 				PlaySound (m_soundManager.m_moveSound, 0.3f);
 			}
 		} else if (Input.GetButtonDown ("Rotate") && Time.time > m_timeToNextKeyRotate) {
-			m_activeShape.RotateRight ();
-			m_timeToNextKeyRotate = Time.time + m_keyRepeatRateRotate;
-			if (!m_gameBoard.isValidPosition (m_activeShape)) {
-				if (m_activeShape.transform.position.x <= 1) {
-					m_activeShape.MoveRight ();
-					if (!m_gameBoard.isValidPosition (m_activeShape)) {
-						m_activeShape.MoveLeft ();
-						m_activeShape.RotateLeft ();
-						PlaySound (m_soundManager.m_errorSound, 0.1f);
-					} else {
-						Settle ();
-						PlaySound (m_soundManager.m_dropSound, 0.3f);
-					}
-				} else if (m_activeShape.transform.position.x >= 8) {
-					m_activeShape.MoveLeft ();
-					if (!m_gameBoard.isValidPosition (m_activeShape)) {
+			if (m_activeShape.m_canRotate) {
+				m_activeShape.RotateRight ();
+				m_timeToNextKeyRotate = Time.time + m_keyRepeatRateRotate;
+				if (!m_gameBoard.isValidPosition (m_activeShape)) {
+					if (m_activeShape.transform.position.x <= 1) {
 						m_activeShape.MoveRight ();
-						m_activeShape.RotateLeft ();
-						PlaySound (m_soundManager.m_errorSound, 0.1f);
-					} else {
-						Settle ();
-						PlaySound (m_soundManager.m_dropSound, 0.3f);
-					}
-				} else {
-					m_activeShape.MoveUp ();
-					if (!m_gameBoard.isValidPosition (m_activeShape)) {
-						m_activeShape.MoveUp ();
 						if (!m_gameBoard.isValidPosition (m_activeShape)) {
-							m_activeShape.MoveUp ();
-							if (!m_gameBoard.isValidPosition (m_activeShape)) {
-								m_activeShape.MoveDown ();
-								m_activeShape.MoveDown ();
-								m_activeShape.MoveDown ();
-							} else {
-								Settle ();
-								flag = true;
-							}
+							m_activeShape.MoveLeft ();
+							m_activeShape.RotateLeft ();
+							PlaySound (m_soundManager.m_errorSound, 0.1f);
 						} else {
 							Settle ();
-							flag = true;
+							PlaySound (m_soundManager.m_dropSound, 0.3f);
+						}
+					} else if (m_activeShape.transform.position.x >= 8) {
+						m_activeShape.MoveLeft ();
+						if (!m_gameBoard.isValidPosition (m_activeShape)) {
+							m_activeShape.MoveRight ();
+							m_activeShape.RotateLeft ();
+							PlaySound (m_soundManager.m_errorSound, 0.1f);
+						} else {
+							Settle ();
+							PlaySound (m_soundManager.m_dropSound, 0.3f);
 						}
 					} else {
-						Settle ();
-						flag = true;
-					}
+						SettleFloor ();
 
-					if (!flag) {
-						m_activeShape.RotateLeft ();
-						PlaySound (m_soundManager.m_errorSound, 0.1f);
 					}
-					flag = false;
+				} else {
+					Settle ();
+					PlaySound (m_soundManager.m_dropSound, 0.3f);
 				}
-			} else {
-				Settle ();
-				PlaySound (m_soundManager.m_dropSound, 0.3f);
 			}
+
 		}
 
 		if (Input.GetButton ("MoveDown") && (Time.time > m_timeToNextKeyDown) || (Time.time > m_timeToDrop)) {
