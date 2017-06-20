@@ -294,7 +294,7 @@ public class GameController : MonoBehaviour {
 				Settle ();
 				PlaySound (m_soundManager.m_moveSound, 1f);
 			}
-		} else if (Input.GetButtonDown ("Rotate") && Time.time > m_timeToNextKeyRotate) {
+		} else if ((Input.GetButtonDown ("Rotate") || Input.GetButtonDown("RotateAlt")) && Time.time > m_timeToNextKeyRotate) {
 			if (m_activeShape.m_canRotate) {
 				PerformRotate (m_clockwise);
 			}
@@ -329,6 +329,8 @@ public class GameController : MonoBehaviour {
 			ToggleRotateDirection ();
 		} else if (Input.GetButtonDown ("Pause")) {
 			TogglePause ();
+		} else if (Input.GetButtonDown ("Hold")) {
+			Hold ();
 		}
 		// if we don't have a spawner or gameBoard just don't run the game
 		if (!m_gameBoard || !m_spawner) {
