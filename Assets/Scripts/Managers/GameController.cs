@@ -3,11 +3,14 @@ using System.Collections;
 
 public class GameController : MonoBehaviour {
 
-	// reference to our board
+	// reference to board
 	Board m_gameBoard;
 
-	// reference to our spawner 
+	// reference to spawner 
 	Spawner m_spawner;
+
+	// reference to holder
+	Holder m_holder;
 
 	// active
 	Shape m_activeShape;
@@ -51,6 +54,7 @@ public class GameController : MonoBehaviour {
 	public GameObject m_pausePanel;
 
 	public GameObject m_gameOverPanel;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -64,6 +68,7 @@ public class GameController : MonoBehaviour {
 		m_spawner = GameObject.FindObjectOfType<Spawner>();
 		m_soundManager = GameObject.FindObjectOfType<SoundManager> ();
 		m_scoreManager = GameObject.FindObjectOfType<ScoreManager> ();
+		m_holder = GameObject.FindObjectOfType<Holder> ();
 
 		m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
 		m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
@@ -372,6 +377,25 @@ public class GameController : MonoBehaviour {
 
 			Time.timeScale = (m_isPaused) ? 0 : 1;
 		}
+
+	}
+
+	public void Hold() 
+	{
+		if (!m_holder) {
+			return;
+		}
+
+		if (!m_holder.m_heldShape) {
+			m_holder.Swap (m_activeShape);
+			m_activeShape = m_spawner.SpawnShape ();
+		} 
+		else 
+		{
+			m_activeShape = m_holder.Swap (m_activeShape);
+			m_spawner.SpawnShape (m_activeShape);
+		}
+			
 
 	}
 }

@@ -34,9 +34,13 @@ public class Spawner : MonoBehaviour {
 	}
 
 	// instantiates a shape at the spawner's position
-	public Shape SpawnShape()
+	public Shape SpawnShape(Shape shape = null)
 	{
-		Shape shape = GetShape ();
+		// For holder
+		if (!shape) {
+			shape = GetShape ();
+		}
+
 		shape.transform.position = transform.position;
 		shape.transform.localScale = Vector3.one;
 		// shape = Instantiate(GetRandomShape(), transform.position, Quaternion.identity) as Shape;
