@@ -69,8 +69,8 @@ public class Spawner : MonoBehaviour {
 			if (!m_queuedShapes [i]) 
 			{
 				m_queuedShapes [i] = Instantiate (GetRandomShape (), transform.position, Quaternion.identity) as Shape;
-				m_queuedShapes [i].transform.position = m_queueTransforms [i].position; // takes position of precreated queueTransforms
-				m_queuedShapes[i].transform.localScale = new Vector3(m_queueScale, m_queueScale, m_queueScale);
+				m_queuedShapes [i].transform.position = m_queueTransforms [i].position + m_queuedShapes[i].m_queueOffset; // takes position of precreated queueTransforms
+				m_queuedShapes[i].transform.localScale = new Vector3(m_queueScale, m_queueScale, m_queueScale); // Shrinks shapes to fit queue slots
 			}
 		}
 	}
@@ -78,15 +78,17 @@ public class Spawner : MonoBehaviour {
 	Shape GetShape() 
 	{
 		Shape firstShape = null;
+
+		// Check first shape in queue
 		if (m_queuedShapes [0]) 
 		{
 			firstShape = m_queuedShapes [0];
 		}
-
+			
 		for (int i = 1; i < m_queuedShapes.Length; i++) 
 		{
 			m_queuedShapes [i - 1] = m_queuedShapes [i];
-			m_queuedShapes [i - 1].transform.position = m_queueTransforms [i - 1].position;
+			m_queuedShapes [i - 1].transform.position = m_queueTransforms [i - 1].position + m_queuedShapes[i].m_queueOffset;
 		}
 
 		m_queuedShapes [m_queuedShapes.Length - 1] = null;

@@ -294,7 +294,6 @@ public class GameController : MonoBehaviour {
 		}
 
 		if (Input.GetButton ("MoveDown") && (Time.time > m_timeToNextKeyDown) || (Time.time > m_timeToDrop)) {
-			Debug.Log (Mathf.Clamp(m_scoreManager.m_level * 0.01f, 0.01f, 0.08f));
 			m_timeToDrop = Time.time + m_dropInterval - Mathf.Clamp(m_scoreManager.m_level * 0.01f, 0.01f, 0.08f);
 			m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
 

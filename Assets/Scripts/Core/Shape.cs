@@ -6,6 +6,8 @@ public class Shape : MonoBehaviour {
 	// turn this property off if you don't want the shape to rotate (Shape O)
 	public bool m_canRotate = true;
 
+	public Vector3 m_queueOffset;
+
 	// general move method
 	void Move(Vector3 moveDirection)
 	{
