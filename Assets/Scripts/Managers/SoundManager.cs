@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour {
 
@@ -38,6 +39,8 @@ public class SoundManager : MonoBehaviour {
 	public IconToggle m_musicIconToggle;
 
 	public IconToggle m_fxIconToggle;
+
+	public AudioClip m_restartClip;
 
 	public AudioClip GetRandomClip(AudioClip[] clips)
 	{

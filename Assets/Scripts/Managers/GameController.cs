@@ -12,6 +12,10 @@ public class GameController : MonoBehaviour {
 	// active
 	Shape m_activeShape;
 
+	// Managers
+	SoundManager m_soundManager;
+	ScoreManager m_scoreManager;
+
 	public float m_dropInterval = 0.7f;
 	float m_timeToDrop;
 	float m_timeToNextKey;
@@ -38,7 +42,6 @@ public class GameController : MonoBehaviour {
 	bool flag;
 	bool m_gameOver = false;
 
-	SoundManager m_soundManager;
 	public IconToggle m_rotateIconToggle;
 	bool m_clockwise = true;
 
@@ -59,6 +62,7 @@ public class GameController : MonoBehaviour {
 		m_gameBoard = GameObject.FindObjectOfType<Board>();
 		m_spawner = GameObject.FindObjectOfType<Spawner>();
 		m_soundManager = GameObject.FindObjectOfType<SoundManager> ();
+		m_scoreManager = GameObject.FindObjectOfType<ScoreManager> ();
 
 		m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
 		m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
@@ -72,6 +76,11 @@ public class GameController : MonoBehaviour {
 		if (!m_soundManager) 
 		{
 			Debug.LogWarning("WARNING!  There is no sound manager defined!");
+		}
+
+		if (!m_scoreManager) 
+		{
+			Debug.LogWarning("WARNING!  There is no score manager defined!");
 		}
 
 		if (!m_spawner) {
@@ -107,6 +116,7 @@ public class GameController : MonoBehaviour {
 
 		PlaySound (m_soundManager.m_dropSound, 0.3f);
 		if (m_gameBoard.m_completedRows > 0) {
+			m_scoreManager.ScoreLines (m_gameBoard.m_completedRows);
 			if (m_gameBoard.m_completedRows == 4){
 				PlaySound (m_soundManager.m_clearRowSounds [2]);
 			} else if (m_gameBoard.m_completedRows > 1) {
@@ -318,7 +328,7 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if (!m_gameBoard || !m_spawner || !m_activeShape || m_gameOver || !m_soundManager) {
+		if (!m_gameBoard || !m_spawner || !m_activeShape || m_gameOver || !m_soundManager || !m_scoreManager) {
 			return;
 		}
 
@@ -330,6 +340,7 @@ public class GameController : MonoBehaviour {
 		Debug.Log ("Restarted");
 		Application.LoadLevel (Application.loadedLevel);
 		TogglePause ();
+		PlaySound (m_soundManager.m_restartClip, 0.2f);
 	}
 
 	public void ToggleRotateDirection()
