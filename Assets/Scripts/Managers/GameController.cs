@@ -300,6 +300,19 @@ public class GameController : MonoBehaviour {
 
 		}
 
+		if (Input.GetButtonDown ("Drop")) {
+			m_settleTime = 0;
+			bool reachedBottom = false;
+			while (!reachedBottom) {
+				m_activeShape.MoveDown ();
+				if (!m_gameBoard.isValidPosition (m_activeShape)) {
+					m_activeShape.MoveUp ();
+					reachedBottom = true;
+				}
+			}
+			reachedBottom = false; // reset
+		}
+
 		if (Input.GetButton ("MoveDown") && (Time.time > m_timeToNextKeyDown) || (Time.time > m_timeToDrop)) {
 			m_timeToDrop = Time.time + m_dropInterval - Mathf.Clamp(m_scoreManager.m_level * 0.01f, 0.01f, 0.08f);
 			m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
@@ -323,6 +336,8 @@ public class GameController : MonoBehaviour {
 				}
 			}
 		}
+
+
 
 		if (Input.GetButtonDown ("RotateDirection")) {
 			ToggleRotateDirection ();
