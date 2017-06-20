@@ -274,7 +274,7 @@ public class GameController : MonoBehaviour {
 				m_activeShape.MoveLeft ();
 			} else {
 				Settle ();
-				PlaySound (m_soundManager.m_moveSound, 0.3f);
+				PlaySound (m_soundManager.m_moveSound, 0.7f);
 			}
 		} else if (Input.GetButton ("MoveLeft") && Time.time > m_timeToNextKeyLeftRight) {
 			m_activeShape.MoveLeft ();
@@ -284,7 +284,7 @@ public class GameController : MonoBehaviour {
 				m_activeShape.MoveRight ();
 			} else {
 				Settle ();
-				PlaySound (m_soundManager.m_moveSound, 0.3f);
+				PlaySound (m_soundManager.m_moveSound, 0.7f);
 			}
 		} else if (Input.GetButtonDown ("Rotate") && Time.time > m_timeToNextKeyRotate) {
 			if (m_activeShape.m_canRotate) {
@@ -307,7 +307,7 @@ public class GameController : MonoBehaviour {
 					if (m_gameOverPanel) {
 						m_gameOverPanel.SetActive (true);
 					}
-					PlaySound (m_soundManager.m_gameOverSound, 0.75f);
+					PlaySound (m_soundManager.m_gameOverSound, 0.5f);
 				} else {
 					if (m_settleTime <= 0) {
 						LandShape ();
@@ -368,7 +368,7 @@ public class GameController : MonoBehaviour {
 			m_pausePanel.SetActive (m_isPaused);
 
 			if (m_soundManager) {
-				m_soundManager.m_musicSource.volume = (m_isPaused) ? m_soundManager.m_musicVolume * 0.25f : m_soundManager.m_musicVolume;
+				m_soundManager.m_musicSource.volume = (m_isPaused) ? m_soundManager.m_musicVolume * 0.35f : m_soundManager.m_musicVolume;
 			}
 
 			Time.timeScale = (m_isPaused) ? 0 : 1;

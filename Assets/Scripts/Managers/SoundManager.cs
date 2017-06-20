@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour {
 
@@ -10,9 +9,6 @@ public class SoundManager : MonoBehaviour {
 
 	[Range(0,1)]
 	public float m_musicVolume = 0.15f;
-
-	[Range(0,1)]
-	public float m_fxVolume = 1.0f;
 
 	// Row clear sounds
 	public AudioClip[] m_clearRowSounds;
