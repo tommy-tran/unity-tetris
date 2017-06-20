@@ -48,6 +48,7 @@ public class GameController : MonoBehaviour {
 
 	public IconToggle m_rotateIconToggle;
 	bool m_clockwise = true;
+	int holdCount;
 
 	public bool m_isPaused = false;
 
@@ -135,6 +136,8 @@ public class GameController : MonoBehaviour {
 
 			//PlaySound (m_soundManager.m_clearRowSound);
 		}
+
+		holdCount = 0;
 	}
 
 	void PlaySound (AudioClip clip, float volume = 1)
@@ -386,15 +389,21 @@ public class GameController : MonoBehaviour {
 			return;
 		}
 
-		if (!m_holder.m_heldShape) {
-			m_holder.Swap (m_activeShape);
-			m_activeShape = m_spawner.SpawnShape ();
-		} 
-		else 
-		{
-			m_activeShape = m_holder.Swap (m_activeShape);
-			m_spawner.SpawnShape (m_activeShape);
+		if (holdCount < 1) {
+			if (!m_holder.m_heldShape) {
+				m_holder.Swap (m_activeShape);
+				m_activeShape = m_spawner.SpawnShape ();
+				holdCount++;
+			} 
+			else 
+			{
+				m_activeShape = m_holder.Swap (m_activeShape);
+				m_spawner.SpawnShape (m_activeShape);
+				holdCount++;
+			}
 		}
+
+
 			
 
 	}
