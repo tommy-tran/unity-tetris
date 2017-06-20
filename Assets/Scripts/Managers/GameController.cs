@@ -274,7 +274,7 @@ public class GameController : MonoBehaviour {
 				m_activeShape.MoveLeft ();
 			} else {
 				Settle ();
-				PlaySound (m_soundManager.m_moveSound, 0.7f);
+				PlaySound (m_soundManager.m_moveSound, 1f);
 			}
 		} else if (Input.GetButton ("MoveLeft") && Time.time > m_timeToNextKeyLeftRight) {
 			m_activeShape.MoveLeft ();
@@ -284,7 +284,7 @@ public class GameController : MonoBehaviour {
 				m_activeShape.MoveRight ();
 			} else {
 				Settle ();
-				PlaySound (m_soundManager.m_moveSound, 0.7f);
+				PlaySound (m_soundManager.m_moveSound, 1f);
 			}
 		} else if (Input.GetButtonDown ("Rotate") && Time.time > m_timeToNextKeyRotate) {
 			if (m_activeShape.m_canRotate) {
