@@ -20,7 +20,6 @@ public class GameController : MonoBehaviour {
 	ScoreManager m_scoreManager;
 
 	public float m_dropInterval = 0.15f;
-	float m_deltaDrop= 0.02f;
 	float m_timeToDrop;
 	float m_timeToNextKey;
 
