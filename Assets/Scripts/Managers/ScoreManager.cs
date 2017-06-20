@@ -8,9 +8,9 @@ public class ScoreManager : MonoBehaviour {
 
 	int m_score = 0;
 	int m_lines = 0;
-	int m_level = 1;
+	public int m_level = 1;
 
-	public int m_linesPerLevel = 5;
+	public int m_linesPerLevel = 4;
 
 	const int m_minLines = 1;
 	const int m_maxLines = 4;
@@ -38,6 +38,11 @@ public class ScoreManager : MonoBehaviour {
 			break;
 		}
 
+		m_lines -= n;
+		if (m_lines <= 0) {
+			LevelUp ();
+		}
+
 		UpdateUI ();
 	}
 
@@ -62,8 +67,15 @@ public class ScoreManager : MonoBehaviour {
 		}
 	}
 
+	public void LevelUp()
+	{
+		m_level++;
+		m_lines = m_linesPerLevel * m_level;
+	}
+
 	// Use this for initialization
 	void Start () {
 		Reset ();
+		UpdateUI ();
 	}
 }

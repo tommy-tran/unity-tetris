@@ -16,7 +16,8 @@ public class GameController : MonoBehaviour {
 	SoundManager m_soundManager;
 	ScoreManager m_scoreManager;
 
-	public float m_dropInterval = 0.7f;
+	public float m_dropInterval = 0.15f;
+	float m_deltaDrop= 0.02f;
 	float m_timeToDrop;
 	float m_timeToNextKey;
 
@@ -27,15 +28,15 @@ public class GameController : MonoBehaviour {
 
 
 	[Range(0.01f, 1f)]
-	public float m_keyRepeatRateDown = 0.01f;
+	public float m_keyRepeatRateDown = 0.025f;
 	float m_timeToNextKeyDown;
 
 	[Range(0.02f, 1f)]
-	public float m_keyRepeatRateRotate = 0.02f;
+	public float m_keyRepeatRateRotate = 0.083f;
 	float m_timeToNextKeyRotate;
 
-	[Range(0.01f, 0.1f)]
-	public float m_settleTimeDelay = 0.25f;
+	[Range(0.2f, 0.8f)]
+	public float m_settleTimeDelay = 0.5f;
 
 	float m_settleTime;
 
@@ -89,6 +90,7 @@ public class GameController : MonoBehaviour {
 			m_spawner.transform.position = Vectorf.Round(m_spawner.transform.position);
 			if (!m_activeShape) {
 				m_activeShape = m_spawner.SpawnShape ();
+				m_settleTime = 1;
 			}
 		}
 
@@ -111,6 +113,7 @@ public class GameController : MonoBehaviour {
 		m_activeShape.MoveUp ();
 		m_gameBoard.StoreShapeInGrid (m_activeShape);
 		m_activeShape = m_spawner.SpawnShape ();
+		m_settleTime = 1;
 
 		m_gameBoard.ClearAllRows ();
 
@@ -141,7 +144,7 @@ public class GameController : MonoBehaviour {
 	{
 		m_activeShape.MoveDown ();
 		if (!m_gameBoard.isValidPosition (m_activeShape)) {
-			m_settleTime = m_settleTimeDelay;
+			m_settleTime = 1;
 		}
 		m_activeShape.MoveUp ();
 	}
@@ -176,6 +179,7 @@ public class GameController : MonoBehaviour {
 			m_activeShape.RotateLeft ();
 			PlaySound (m_soundManager.m_errorSound, 0.1f);
 		}
+		// Flag for when block is settled
 		flag = false;
 	}
 
@@ -290,8 +294,8 @@ public class GameController : MonoBehaviour {
 		}
 
 		if (Input.GetButton ("MoveDown") && (Time.time > m_timeToNextKeyDown) || (Time.time > m_timeToDrop)) {
-			
-			m_timeToDrop = Time.time + m_dropInterval;
+			Debug.Log (Mathf.Clamp(m_scoreManager.m_level * 0.01f, 0.01f, 0.08f));
+			m_timeToDrop = Time.time + m_dropInterval - Mathf.Clamp(m_scoreManager.m_level * 0.01f, 0.01f, 0.08f);
 			m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
 
 			m_activeShape.MoveDown ();
@@ -309,7 +313,7 @@ public class GameController : MonoBehaviour {
 						LandShape ();
 					}
 					m_activeShape.MoveUp ();
-					m_settleTime -= m_settleTimeDelay/2;
+					m_settleTime -= (1 - m_settleTimeDelay);
 				}
 			}
 		}
