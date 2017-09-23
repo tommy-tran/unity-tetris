@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
@@ -12,12 +13,17 @@ public class GameController : MonoBehaviour {
 	// reference to holder
 	Holder m_holder;
 
-	// active
-	Shape m_activeShape;
+    // name
+    InputField m_input;
+    public string m_name;
+
+    // active
+    Shape m_activeShape;
 
 	// Managers
 	SoundManager m_soundManager;
 	ScoreManager m_scoreManager;
+    HighScores m_highScores;
 
 	public float m_dropInterval = 0.15f;
 	float m_timeToDrop;
@@ -68,9 +74,11 @@ public class GameController : MonoBehaviour {
 		m_spawner = GameObject.FindObjectOfType<Spawner>();
 		m_soundManager = GameObject.FindObjectOfType<SoundManager> ();
 		m_scoreManager = GameObject.FindObjectOfType<ScoreManager> ();
+        m_highScores = GameObject.FindObjectOfType<HighScores>();
 		m_holder = GameObject.FindObjectOfType<Holder> ();
+        m_input = GameObject.FindObjectOfType<InputField>();
 
-		m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
+        m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
 		m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
 		m_timeToNextKeyRotate = Time.time + m_keyRepeatRateRotate;
 			
@@ -100,13 +108,20 @@ public class GameController : MonoBehaviour {
 		}
 
 		if (!m_gameOver) {
-			m_gameOverPanel.SetActive (false);
+            m_gameOverPanel.transform.localScale = new Vector3(0, 0, 0);
 		}
+
 
 		if (m_pausePanel) {
 			m_pausePanel.SetActive (false);
 		}
 	}
+
+    public void changeName(string name)
+    {
+        print(name);
+        m_name = name;
+    }
 
 	void LandShape ()
 	{
@@ -324,10 +339,10 @@ public class GameController : MonoBehaviour {
 					m_gameOver = true;
 					Debug.LogWarning (m_activeShape.name + " is over limit");
 					if (m_gameOverPanel) {
-						m_gameOverPanel.SetActive (true);
-					}
+                        m_gameOverPanel.transform.localScale = new Vector3(1, 1, 1);
+                    }
 					PlaySound (m_soundManager.m_gameOverSound, 0.5f);
-				} else {
+                } else {
 					if (m_settleTime <= 0) {
 						LandShape ();
 					}
@@ -370,7 +385,13 @@ public class GameController : MonoBehaviour {
 		PlaySound (m_soundManager.m_restartClip, 0.2f);
 	}
 
-	public void ToggleRotateDirection()
+    public void SendScore()
+    {
+        Debug.Log("Score Sent");
+        m_highScores.AddNewHighScore(m_name, m_scoreManager.m_score);
+    }
+
+    public void ToggleRotateDirection()
 	{
 		m_clockwise = !m_clockwise;
 

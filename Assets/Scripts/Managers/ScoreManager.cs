@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour {
 
-	int m_score = 0;
+	public int m_score = 0;
 	int m_lines = 0;
 	public int m_level = 1;
 
-	public int m_linesPerLevel = 4;
+	public int m_linesPerLevel = 5;
 
 	const int m_minLines = 1;
 	const int m_maxLines = 4;
@@ -25,16 +25,16 @@ public class ScoreManager : MonoBehaviour {
 		switch (n) 
 		{
 		case 1:
-			m_score += 50 * m_level;
+			m_score += 40 * m_level;
 			break;
 		case 2:
 			m_score += 100 * m_level;
 			break;
 		case 3:
-			m_score += 300 * m_level;
+			m_score += 250 * m_level;
 			break;
 		case 4:
-			m_score += 1200 * m_level;
+			m_score += 750 * m_level;
 			break;
 		}
 
