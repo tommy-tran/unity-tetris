@@ -60,6 +60,8 @@ public class GameController : MonoBehaviour {
 	public GameObject m_pausePanel;
 	public GameObject m_gameOverPanel;
     public GameObject m_sentPanel;
+    public GameObject m_sendButton;
+    public GameObject m_restartButton;
 
 	// Use this for initialization
 	void Start () 
@@ -77,6 +79,8 @@ public class GameController : MonoBehaviour {
         m_highScores = GameObject.FindObjectOfType<HighScores>();
 		m_holder = GameObject.FindObjectOfType<Holder> ();
         m_input = GameObject.FindObjectOfType<InputField>();
+        m_sendButton = GameObject.FindGameObjectWithTag("SendButton");
+        m_restartButton = GameObject.FindGameObjectWithTag("RestartButton");
 
         m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
 		m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
@@ -388,6 +392,8 @@ public class GameController : MonoBehaviour {
     public void ScoreSentConfirm()
     {
         m_sentPanel.SetActive(false);
+        m_sendButton.SetActive(false);
+        m_restartButton.transform.localPosition = new Vector3(0, -350, 0);
     }
 
     public void SendScore()
