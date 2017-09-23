@@ -73,9 +73,12 @@ public class ScoreManager : MonoBehaviour {
 	{
 		m_level++;
 		m_lines = m_linesPerLevel * m_level;
-        if (m_level <= 6)
+        if (m_level <= 5)
         {
             gameController.m_dropInterval -= 0.02f;
+        } else
+        {
+            gameController.m_dropInterval -= 0.01f;
         }
         
 	}
