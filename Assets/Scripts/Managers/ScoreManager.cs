@@ -10,13 +10,15 @@ public class ScoreManager : MonoBehaviour {
 	int m_lines = 0;
 	public int m_level = 1;
 
-	public int m_linesPerLevel = 5;
+	public int m_linesPerLevel = 4;
 
 	const int m_minLines = 1;
 	const int m_maxLines = 4;
 	public Text m_linesText;
 	public Text m_levelText;
 	public Text m_scoreText;
+
+    GameController gameController;
 
 	public void ScoreLines(int n)
 	{
@@ -28,13 +30,13 @@ public class ScoreManager : MonoBehaviour {
 			m_score += 40 * m_level;
 			break;
 		case 2:
-			m_score += 100 * m_level;
+			m_score += 80 * m_level;
 			break;
 		case 3:
-			m_score += 250 * m_level;
+			m_score += 200 * m_level;
 			break;
 		case 4:
-			m_score += 750 * m_level;
+			m_score += 800 * m_level;
 			break;
 		}
 
@@ -71,11 +73,17 @@ public class ScoreManager : MonoBehaviour {
 	{
 		m_level++;
 		m_lines = m_linesPerLevel * m_level;
+        if (m_level <= 5)
+        {
+            gameController.m_dropInterval -= 0.025f;
+        }
+        
 	}
 
 	// Use this for initialization
 	void Start () {
 		Reset ();
 		UpdateUI ();
+        gameController = GameObject.FindObjectOfType<GameController>();
 	}
 }

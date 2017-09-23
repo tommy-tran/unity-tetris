@@ -58,8 +58,8 @@ public class GameController : MonoBehaviour {
 	public bool m_isPaused = false;
 
 	public GameObject m_pausePanel;
-
 	public GameObject m_gameOverPanel;
+    public GameObject m_sentPanel;
 
 	// Use this for initialization
 	void Start () 
@@ -385,10 +385,16 @@ public class GameController : MonoBehaviour {
 		PlaySound (m_soundManager.m_restartClip, 0.2f);
 	}
 
+    public void ScoreSentConfirm()
+    {
+        m_sentPanel.SetActive(false);
+    }
+
     public void SendScore()
     {
         Debug.Log("Score Sent");
         m_highScores.AddNewHighScore(m_name, m_scoreManager.m_score);
+        m_sentPanel.SetActive(true);
     }
 
     public void ToggleRotateDirection()
