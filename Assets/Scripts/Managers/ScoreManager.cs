@@ -20,7 +20,9 @@ public class ScoreManager : MonoBehaviour {
 
     GameController gameController;
 
-	public void ScoreLines(int n)
+    SoundManager m_soundManager;
+
+    public void ScoreLines(int n)
 	{
 		n = Mathf.Clamp (n, m_minLines, m_maxLines);
 
@@ -69,24 +71,29 @@ public class ScoreManager : MonoBehaviour {
 		}
 	}
 
-	public void LevelUp()
-	{
-		m_level++;
-		m_lines = m_linesPerLevel * m_level;
-        if (m_level <= 5)
-        {
-            gameController.m_dropInterval -= 0.02f;
-        } else
-        {
-            gameController.m_dropInterval -= 0.01f;
-        }
-        
-	}
+    public void LevelUp()
+    {
+        m_level++;
+        m_lines = m_linesPerLevel * m_level;
+        gameController.m_dropInterval *= 0.9f;
+        gameController.m_settleTimeDelay *= 1.12f;
+        PlaySound(m_soundManager.m_levelUpSound);
+    }
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		Reset ();
 		UpdateUI ();
         gameController = GameObject.FindObjectOfType<GameController>();
-	}
+        m_soundManager = GameObject.FindObjectOfType<SoundManager>();
+    }
+
+    void PlaySound(AudioClip clip, float volume = 1.1f)
+    {
+        if (m_soundManager.m_fxEnabled && clip)
+        {
+            m_soundManager.PlayFX(clip, volume);
+            //	AudioSource.PlayClipAtPoint (clip, Camera.main.transform.position, Mathf.Clamp(m_soundManager.m_fxVolume * volume, 0.05f, 1f));
+        }
+    }
 }

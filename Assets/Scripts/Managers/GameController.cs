@@ -79,8 +79,6 @@ public class GameController : MonoBehaviour {
         m_highScores = GameObject.FindObjectOfType<HighScores>();
 		m_holder = GameObject.FindObjectOfType<Holder> ();
         m_input = GameObject.FindObjectOfType<InputField>();
-        m_sendButton = GameObject.FindGameObjectWithTag("SendButton");
-        m_restartButton = GameObject.FindGameObjectWithTag("RestartButton");
 
         m_timeToNextKeyLeftRight = Time.time + m_keyRepeatRateLeftRight;
 		m_timeToNextKeyDown = Time.time + m_keyRepeatRateDown;
@@ -129,7 +127,6 @@ public class GameController : MonoBehaviour {
 
 	void LandShape ()
 	{
-
 		m_timeToNextKeyLeftRight = Time.time;
 		m_timeToNextKeyDown = Time.time;
 		m_timeToNextKeyRotate = Time.time;
@@ -151,14 +148,13 @@ public class GameController : MonoBehaviour {
 			} else {
 				PlaySound (m_soundManager.m_clearRowSounds [0]);
 			}
-
 			//PlaySound (m_soundManager.m_clearRowSound);
 		}
 
 		holdCount = 0;
 	}
 
-	void PlaySound (AudioClip clip, float volume = 1)
+	void PlaySound (AudioClip clip, float volume = 0.9f)
 	{
 		if (m_soundManager.m_fxEnabled && clip) {
 			m_soundManager.PlayFX (clip, volume);

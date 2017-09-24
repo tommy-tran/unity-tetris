@@ -27,6 +27,10 @@ public class SoundManager : MonoBehaviour {
 
 	public AudioClip m_errorSound;
 
+    // Level up sound
+
+    public AudioClip m_levelUpSound;
+
 	// background music clips
 	public AudioClip[] m_musicClips;
 
