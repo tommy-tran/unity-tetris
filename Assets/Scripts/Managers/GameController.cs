@@ -66,12 +66,6 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		
-		// find spawner and board with GameObject.FindWithTag plus GetComponent; make sure you tag your objects correctly
-		//m_gameBoard = GameObject.FindWithTag("Board").GetComponent<Board>();
-		//m_spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
-
-		// find spawner and board with generic version of GameObject.FindObjectOfType, slower but less typing
 		m_gameBoard = GameObject.FindObjectOfType<Board>();
 		m_spawner = GameObject.FindObjectOfType<Spawner>();
 		m_soundManager = GameObject.FindObjectOfType<SoundManager> ();
@@ -148,7 +142,6 @@ public class GameController : MonoBehaviour {
 			} else {
 				PlaySound (m_soundManager.m_clearRowSounds [0]);
 			}
-			//PlaySound (m_soundManager.m_clearRowSound);
 		}
 
 		holdCount = 0;
@@ -158,7 +151,6 @@ public class GameController : MonoBehaviour {
 	{
 		if (m_soundManager.m_fxEnabled && clip) {
 			m_soundManager.PlayFX (clip, volume);
-		//	AudioSource.PlayClipAtPoint (clip, Camera.main.transform.position, Mathf.Clamp(m_soundManager.m_fxVolume * volume, 0.05f, 1f));
 		}
 	}
 

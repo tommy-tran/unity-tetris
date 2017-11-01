@@ -5,7 +5,7 @@ using UnityEngine;
 public class HighScores : MonoBehaviour {
 	const string privateCode = "eYKNAHiiYk-wuLcujd6QBQIeJCJc7YJEygBLuKhxOMLA";
 	const string publicCode = "594d32bf758d2603446cde29";
-	const string webURL = "http://dreamlo.com/lb/";
+	const string webURL = "https://dreamlo.com/lb/";
 
 	public Highscore[] highscoreList;
 	DisplayHighScores highscoresDisplay;
@@ -50,6 +50,7 @@ public class HighScores : MonoBehaviour {
 	}
 
 	void FormatHighscores(string textStream) {
+        print(textStream);
 		string[] entries = textStream.Split (new char[] {'\n'}, System.StringSplitOptions.RemoveEmptyEntries);
 		highscoreList = new Highscore[entries.Length];
 		for (int i = 0; i < entries.Length; i++) {
